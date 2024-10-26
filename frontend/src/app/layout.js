@@ -24,19 +24,29 @@ export default function RootLayout({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
 
-  const checkAuth = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const savedUsername = localStorage.getItem('username');
-      if (savedUsername) {
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/status`, {
+        method: 'GET',
+        credentials: 'include', // Ensure cookies are sent
+      });
+
+      if (response.ok) {
+        const data = await response.json();
         setIsLoggedIn(true);
-        setUsername(savedUsername);
+        setUsername(data.user.username);
+      } else {
+        setIsLoggedIn(false);
+        setUsername('');
       }
-    } else {
+    } catch (error) {
+      console.error('Auth check failed:', error);
       setIsLoggedIn(false);
       setUsername('');
     }
   };
+
 
   useEffect(() => {
     checkAuth();

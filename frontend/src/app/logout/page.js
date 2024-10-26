@@ -7,12 +7,18 @@ export default function Logout() {
     const router = useRouter();
 
     useEffect(() => {
-        localStorage.removeItem("username");
-        localStorage.removeItem("token");
+        const logout = async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+                method: 'POST',
+                credentials: 'include', // Ensure cookies are sent with the request
+            });
 
-        window.dispatchEvent(new Event("authChange"));
+            window.dispatchEvent(new Event("authChange"));
+            router.push("/");
+        };
 
-        router.push("/");
+        logout();
     }, [router]);
+
 
 }

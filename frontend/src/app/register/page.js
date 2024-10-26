@@ -12,6 +12,7 @@ const SignupPage = () => {
         schoolYear: "",
         userGroup: "",
     });
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,6 +20,7 @@ const SignupPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage("");
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
             method: "POST",
@@ -31,15 +33,17 @@ const SignupPage = () => {
         const data = await response.json();
 
         if (response.ok) {
-            alert("User registered successfully!");
+            console.log("User registered successfully!", data);
         } else {
-            alert(data.message || "Something went wrong");
+            console.error("Register failed:", data.message);
+            setErrorMessage(data.message);
         }
     };
 
     return (
         <div style={{padding: "2rem"}}>
             <h1>Sign Up</h1>
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Username:</label>

@@ -13,10 +13,15 @@ export const registerUser = async (req, res) => {
 
     try {
         let user = await User.findOne({ username });
-
         if (user) {
             return res.status(400).json({ message: "Username is already taken" });
         }
+
+        let existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+            return res.status(400).json({ message: "Email is already in use" });
+        }
+
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -72,9 +77,17 @@ export const loginUser = async (req, res) => {
             expiresIn: '1h',
         });
 
+        res.cookie("token", token, {
+            httpOnly: true, // Makes the cookie inaccessible to JavaScript
+            secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production
+            // sameSite: "Strict", // Helps prevent CSRF attacks
+            maxAge: 3600000, // 1 hour in milliseconds
+            path: '/',
+        });
+
         return res.status(200).json({
             message: "Login successful!",
-            token,
+            username: user.username
         });
 
     } catch (error) {
@@ -82,3 +95,9 @@ export const loginUser = async (req, res) => {
         return res.status(500).json({ message: "Server Error" });
     }
 };
+
+export const logoutUser = (req, res) => {
+    res.clearCookie("token");
+    return res.status(200).json({ message: "Logged out successfully" });
+};
+
