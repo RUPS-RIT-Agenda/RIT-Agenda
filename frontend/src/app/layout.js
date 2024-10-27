@@ -65,7 +65,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
     <body className={`${geistSans.variable} ${geistMono.variable}`}>
-    <nav style={{padding: "1rem", backgroundColor: "#f5f5f5"}}>
+    <nav className="fixed top-0 left-0 w-full z-10 text-white px-10 py-4 flex justify-between items-center" style={{ backgroundColor: "\n" +
+          "#2d3f50"}} >
       <Link href="/">Home</Link> |{" "}
       {isLoggedIn ? (
           <>
