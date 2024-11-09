@@ -12,11 +12,11 @@ const app = express();
 const PORT = process.env.PORT || 6001;
 
 mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => {
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
-  })
-  .catch((err) => console.log(`${err} did not connect`));
+    .connect(process.env.MONGO_URL)
+    .then(() => {
+        app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+    })
+    .catch((err) => console.log(`${err} did not connect`));
 
 app.use(cors({
     origin: 'http://localhost:3000',

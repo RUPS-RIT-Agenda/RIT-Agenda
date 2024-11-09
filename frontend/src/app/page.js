@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import './page.css';
 import Calendar from "@/components/Calendar";
+import StartupPage from "./startup";  
 
 const LandingPage = () => {
     const [user, setUser] = useState(null);
@@ -47,10 +48,12 @@ const LandingPage = () => {
         return <div>Loading...</div>;
     }
 
+    // If the user is not logged in, show the StartupPage
     if (!user) {
-        return <div>Please log in to access the calendar.</div>; 
+        return <StartupPage />;
     }
 
+    // If the user is logged in, show the calendar
     return (
         <div className="pt-10 pl-20 pr-20">
             <Calendar user={user} />
