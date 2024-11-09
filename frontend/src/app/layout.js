@@ -22,28 +22,28 @@ const geistMono = localFont({
 
 export default function RootLayout({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
+  const [user, setUser] = useState(null);
 
 
   const checkAuth = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/status`, {
         method: 'GET',
-        credentials: 'include', // Ensure cookies are sent
+        credentials: 'include', 
       });
 
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
-        setUsername(data.user.username);
+        setUser(data.user);
       } else {
         setIsLoggedIn(false);
-        setUsername('');
+        setUser(null);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       setIsLoggedIn(false);
-      setUsername('');
+      setUser(null);
     }
   };
 
@@ -71,7 +71,7 @@ export default function RootLayout({ children }) {
       {isLoggedIn ? (
           <>
             <Link href="logout">Log Out</Link>
-            <h4>Welcome, {username}</h4>
+            <h4>Welcome, {user.username}</h4>
           </>
       ) : (
           <>

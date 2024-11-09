@@ -1,16 +1,61 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import './page.css';
 import Calendar from "@/components/Calendar";
 
 const LandingPage = () => {
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const checkAuth = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/status`, {
+                method: 'GET',
+                credentials: 'include', 
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUser(data.user);
+            } else {
+                setUser(null);
+            }
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            setUser(null);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        checkAuth();
+
+        const handleAuthChange = () => {
+            checkAuth();
+        };
+
+        window.addEventListener("authChange", handleAuthChange);
+
+        return () => {
+            window.removeEventListener("authChange", handleAuthChange);
+        };
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!user) {
+        return <div>Please log in to access the calendar.</div>; 
+    }
 
     return (
-        <div className="container">
-            <Calendar></Calendar>
+        <div className="pt-10 pl-20 pr-20">
+            <Calendar user={user} />
         </div>
     );
 };
 
 export default LandingPage;
-

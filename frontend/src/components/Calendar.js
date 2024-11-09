@@ -1,153 +1,142 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-    formatDate,
-} from "@fullcalendar/core";
+import { formatDate } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-export default function Calendar (){
+export default function Calendar({ user }) {
     const [currentEvents, setCurrentEvents] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [newEventTitle, setNewEventTitle] = useState("");
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedDuration, setSelectedDuration] = useState(null);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const savedEvents = localStorage.getItem("events");
-            if (savedEvents) {
-                setCurrentEvents(JSON.parse(savedEvents));
-            }
+        if (user && user.studyCycle && user.schoolYear) {
+            fetchEvents(user);
         }
-    }, []);
+    }, [user]);
 
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            localStorage.setItem("events", JSON.stringify(currentEvents));
+    const fetchEvents = async (user) => {
+        try {
+            const lessonsResponse = await fetch(
+                `http://localhost:3001/api/course/lessons/${user.studyCycle}/${user.schoolYear}`
+            );
+            const lessons = lessonsResponse.ok ? await lessonsResponse.json() : [];
+
+            const exercisesResponse = await fetch(
+                `http://localhost:3001/api/course/exercises/${user.studyCycle}/${user.schoolYear}/${user.userGroup}`
+            );
+            const exercises = exercisesResponse.ok ? await exercisesResponse.json() : [];
+
+            const transformedEvents = [...lessons, ...exercises].flatMap(course => {
+                const events = [];
+                let startDate = new Date(course.firstExecution);
+                const endDate = new Date(course.lastExecution);
+
+                const eventType = course.type || (lessons.includes(course) ? 'lesson' : 'exercise');
+
+                while (startDate <= endDate) {
+                    const eventStart = new Date(startDate);
+                    const eventEnd = new Date(startDate.getTime() + 2 * 60 * 60 * 1000); 
+
+                    events.push({
+                        id: `${course._id}-${startDate.toISOString()}`,
+                        title: `${course.name} - ${course.classroom || 'No Classroom Specified'}`,
+                        start: eventStart,
+                        end: eventEnd,
+                        allDay: false,
+                        extendedProps: {
+                            details: { ...course, type: eventType },
+                            duration: `2 hours`
+                        }
+                    });
+
+                    startDate.setDate(startDate.getDate() + 7);
+                }
+
+                return events;
+            });
+
+            setCurrentEvents(transformedEvents);
+        } catch (error) {
+            console.error("Error fetching events:", error);
         }
-    }, [currentEvents]);
-
-    const handleDateClick = (selected) => {
-        setSelectedDate(selected);
-        setIsDialogOpen(true);
     };
 
     const handleEventClick = (selected) => {
-        if (window.confirm(`Are you sure you want to delete the event "${selected.event.title}"?`)) {
-            selected.event.remove();
-            setCurrentEvents(currentEvents.filter(event => event.id !== selected.event.id));
-        }
+        const { details, duration } = selected.event.extendedProps;
+        const clickedDate = formatDate(selected.event.start, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        setSelectedEvent({ ...details, clickedDate });
+        setSelectedDuration(duration);
+        setIsDialogOpen(true);
     };
 
     const handleCloseDialog = () => {
         setIsDialogOpen(false);
-        setNewEventTitle("");
+        setSelectedEvent(null);
+        setSelectedDuration(null);
     };
 
-    const handleAddEvent = (e) => {
-        e.preventDefault();
-        if (newEventTitle && selectedDate) {
-            const newEvent = {
-                id: `${selectedDate.startStr}-${newEventTitle}`,
-                title: newEventTitle,
-                start: selectedDate.startStr,
-                end: selectedDate.endStr,
-                allDay: selectedDate.allDay,
-            };
+    const renderEventContent = (eventInfo) => {
+        const isLesson = eventInfo.event.extendedProps.details.type === 'lesson';
+        const bgColorClass = isLesson ? 'bg-blue-900' : 'bg-slate-800'; 
+        const textColorClass = 'text-white';
 
-            setCurrentEvents([...currentEvents, newEvent]);
-            handleCloseDialog();
-        }
+        return (
+            <div
+                className={`p-1 rounded ${bgColorClass} ${textColorClass} h-full truncate`}
+                title={`${eventInfo.event.title} - ${eventInfo.timeText}`}
+            >
+                <strong>{eventInfo.event.title}</strong>
+                <br />
+                <span>{eventInfo.timeText}</span> 
+            </div>
+        );
     };
 
     return (
-        <div>
-            <div className="flex w-full px-10 justify-start items-start gap-8">
-                <div className="w-3/12">
-                    <div className="py-10 text-2xl font-extrabold px-7">
-                        Calendar Events
-                    </div>
-                    <ul className="space-y-4">
-                        {currentEvents.length === 0 && (
-                            <div className="italic text-center text-gray-400">
-                                No Events Present
-                            </div>
-                        )}
-                        {currentEvents.map((event) => (
-                            <li
-                                className="border border-gray-200 shadow px-4 py-2 rounded-md text-blue-800"
-                                key={event.id}
-                            >
-                                {event.title}
-                                <br />
-                                <span className="text-slate-950">
-                                    {formatDate(event.start, {
-                                        year: "numeric",
-                                        month: "short",
-                                        day: "numeric",
-                                    })}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                <div className="w-9/12 mt-8">
-                    <FullCalendar
-                        height="85vh"
-                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                        headerToolbar={{
-                            left: "prev,next today",
-                            center: "title",
-                            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-                        }}
-                        initialView="dayGridMonth"
-                        editable={true}
-                        selectable={true}
-                        selectMirror={true}
-                        dayMaxEvents={true}
-                        select={handleDateClick}
-                        eventClick={handleEventClick}
-                        eventsSet={setCurrentEvents}
-                        initialEvents={
-                            typeof window !== "undefined"
-                                ? JSON.parse(localStorage.getItem("events") || "[]")
-                                : []
-                        }
-                    />
-                </div>
+        <div className="flex justify-center w-full gap-8">
+            <div className="w-full mt-8">
+                <FullCalendar
+                    height="85vh"
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    headerToolbar={{ left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek" }}
+                    initialView="timeGridWeek" 
+                    editable
+                    selectable
+                    selectMirror
+                    dayMaxEvents
+                    events={currentEvents}
+                    eventContent={renderEventContent}
+                    eventClick={handleEventClick}
+                    slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }} 
+                    eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }} 
+                />
             </div>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Add New Event Details</DialogTitle>
+                        <DialogTitle>Event Details</DialogTitle>
                     </DialogHeader>
-                    <form className="space-x-5 mb-4" onSubmit={handleAddEvent}>
-                        <input
-                            type="text"
-                            placeholder="Event Title"
-                            value={newEventTitle}
-                            onChange={(e) => setNewEventTitle(e.target.value)}
-                            required
-                            className="border border-gray-200 p-3 rounded-md text-lg"
-                        />
-                        <button
-                            className="bg-green-500 text-white p-3 mt-5 rounded-md"
-                            type="submit"
-                        >
-                            Add
-                        </button>
-                    </form>
+                    {selectedEvent && (
+                        <div className="space-y-4">
+                            <p><strong>Name:</strong> {selectedEvent.name}</p>
+                            <p><strong>Type:</strong> {selectedEvent.type}</p>
+                            <p><strong>Professor:</strong> {selectedEvent.professor}</p>
+                            <p><strong>Classroom:</strong> {selectedEvent.classroom || 'No Classroom Specified'}</p>
+                            <p><strong>Date:</strong> {selectedEvent.clickedDate}</p>
+                            <p><strong>Duration:</strong> {selectedDuration}</p>
+                        </div>
+                    )}
+                    <button className="bg-blue-500 text-white p-3 mt-5 rounded-md" onClick={handleCloseDialog}>
+                        Close
+                    </button>
                 </DialogContent>
             </Dialog>
         </div>

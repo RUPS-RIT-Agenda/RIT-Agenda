@@ -64,8 +64,7 @@ export const getLessonsByCycleAndYear = async (req, res) => {
 };
 
 export const getExercisesByCycleYearAndGroup = async (req, res) => {
-    const { cycle } = req.params;
-    const { year, group } = req.query;
+    const { cycle, year, group } = req.params;
 
     try {
         const filter = {

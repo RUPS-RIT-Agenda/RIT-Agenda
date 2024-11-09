@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post('/', createCourse);
 router.get('/lessons/:cycle/:year', getLessonsByCycleAndYear);
-router.get('/exercises/:cycle/group', getExercisesByCycleYearAndGroup);
+router.get('/exercises/:cycle/:year/:group', getExercisesByCycleYearAndGroup);
 
 export default router;
