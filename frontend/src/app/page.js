@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import './page.css';
 import Calendar from "@/components/Calendar";
 import StartupPage from "./startup";  
-
+import UserProfile from "@/components/UserProfile";
 const LandingPage = () => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);

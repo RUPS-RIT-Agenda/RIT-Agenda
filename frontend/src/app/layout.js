@@ -63,13 +63,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 relative`}
       >
-        {/* Simplified Background Circles */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="floating-circle top-5 left-20 w-20 h-20 bg-blue-300 opacity-40 rounded-full blur-xl"></div>
-          {/* Removed the bottom right teal circle */}
         </div>
 
-        {/* Conditionally Render Navbar */}
         {isLoggedIn && (
           <nav className="fixed top-0 left-0 w-full z-10 bg-gradient-to-br from-blue-600 to-cyan-600 text-white px-8 py-4 flex justify-between items-center shadow-md">
             <Link
@@ -85,7 +82,9 @@ export default function RootLayout({ children }) {
               >
                 Log Out
               </Link>
-              <h4 className="text-base font-light">Welcome, {user && user.username}</h4>
+              <Link href="/profile" className="text-base font-light underline hover:scale-105">
+                Welcome, {user && user.username}
+              </Link>
             </div>
           </nav>
         )}
