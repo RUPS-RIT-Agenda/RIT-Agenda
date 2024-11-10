@@ -52,16 +52,18 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-r from-blue-200 to-purple-200 relative">
+    <div className="flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-r from-gray-200 via-blue-200 to-gray-300 relative">
       {/* Fun Floating Circles */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="floating-circle top-10 left-20 w-32 h-32 bg-gradient-to-br from-green-400 to-blue-400 opacity-50 rounded-full blur-2xl animate-bounce-slow"></div>
-        <div className="floating-circle bottom-10 right-20 w-40 h-40 bg-gradient-to-br from-pink-400 to-red-400 opacity-50 rounded-full blur-3xl animate-bounce-slow"></div>
+        <div className="floating-circle top-10 left-20 w-32 h-32 bg-gradient-to-br from-blue-400 to-cyan-400 opacity-50 rounded-full blur-2xl animate-bounce-slow"></div>
+        <div className="floating-circle bottom-10 right-20 w-40 h-40 bg-gradient-to-br from-green-400 to-teal-500 opacity-50 rounded-full blur-3xl animate-bounce-slow"></div>
       </div>
 
       {/* Main Container with Form */}
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-16 flex flex-col items-center space-y-6 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900">Log In</h1>
+        <h1 className="text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+          Log In
+        </h1>
         {errorMessage && (
           <p className="text-lg text-red-500 font-semibold">
             {errorMessage}
@@ -69,7 +71,7 @@ export default function Login() {
         )}
         <form onSubmit={handleSubmit} className="w-full space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-medium text-gray-700 mb-2">
               Username:
             </label>
             <input
@@ -82,7 +84,7 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-lg font-medium text-gray-700 mb-2">
               Password:
             </label>
             <input
@@ -96,9 +98,9 @@ export default function Login() {
           </div>
           <button
             type="submit"
-            className="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-2xl transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
+            className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-2xl transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
           >
-            Log In
+            <span className="text-lg uppercase tracking-wide">Log In</span>
           </button>
         </form>
       </div>

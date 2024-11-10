@@ -44,16 +44,18 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-r from-blue-200 to-purple-200 relative">
+    <div className="flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-r from-gray-200 via-blue-200 to-gray-300 relative">
       {/* Fun Floating Circles */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="floating-circle top-10 left-20 w-24 h-24 bg-gradient-to-br from-green-400 to-blue-400 opacity-50 rounded-full blur-2xl animate-bounce-slow"></div>
-        <div className="floating-circle bottom-10 right-20 w-32 h-32 bg-gradient-to-br from-pink-400 to-red-400 opacity-50 rounded-full blur-3xl animate-bounce-slow"></div>
+        <div className="floating-circle top-10 left-20 w-24 h-24 bg-gradient-to-br from-blue-400 to-cyan-400 opacity-50 rounded-full blur-2xl animate-bounce-slow"></div>
+        <div className="floating-circle bottom-10 right-20 w-32 h-32 bg-gradient-to-br from-green-400 to-teal-500 opacity-50 rounded-full blur-3xl animate-bounce-slow"></div>
       </div>
 
       {/* Main Container with Form */}
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-10 flex flex-col items-center space-y-6 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Sign Up</h1>
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-10 flex flex-col items-center space-y-6 text-center">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+          Sign Up
+        </h1>
         {errorMessage && (
           <p className="text-lg text-red-500 font-semibold">
             {errorMessage}
@@ -70,7 +72,7 @@ const SignupPage = () => {
               value={formData.username}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
             />
           </div>
           <div>
@@ -83,7 +85,7 @@ const SignupPage = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
             />
           </div>
           <div>
@@ -96,7 +98,7 @@ const SignupPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
             />
           </div>
           <div>
@@ -108,7 +110,7 @@ const SignupPage = () => {
               name="dateOfBirth"
               value={formData.dateOfBirth}
               onChange={handleChange}
-              className="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
             />
           </div>
           <div>
@@ -120,7 +122,7 @@ const SignupPage = () => {
               value={formData.studyCycle}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-full focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all hover:shadow-lg"
+              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all appearance-none hover:bg-gray-100 hover:border-blue-400 cursor-pointer"
             >
               <option value="">Select</option>
               <option value="UNI">UNI</option>
@@ -136,7 +138,7 @@ const SignupPage = () => {
               value={formData.schoolYear}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-md focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all hover:shadow-lg"
+              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all appearance-none hover:bg-gray-100 hover:border-blue-400 cursor-pointer"
             >
               <option value="">Select</option>
               <option value="1">1</option>
@@ -154,14 +156,14 @@ const SignupPage = () => {
               value={formData.userGroup}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
             />
           </div>
           <button
             type="submit"
-            className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-2xl transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
+            className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-2xl transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
           >
-            Register
+            <span className="text-lg uppercase tracking-wide">Register</span>
           </button>
         </form>
       </div>

@@ -7,6 +7,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import "./calendar.css"; // Import your custom styles here
 
 export default function Calendar({ user }) {
     const [currentEvents, setCurrentEvents] = useState([]);
@@ -32,27 +33,28 @@ export default function Calendar({ user }) {
             );
             const exercises = exercisesResponse.ok ? await exercisesResponse.json() : [];
 
-            const transformedEvents = [...lessons, ...exercises].flatMap(course => {
+            const transformedEvents = [...lessons, ...exercises].flatMap((course) => {
                 const events = [];
                 let startDate = new Date(course.firstExecution);
                 const endDate = new Date(course.lastExecution);
 
-                const eventType = course.type || (lessons.includes(course) ? 'lesson' : 'exercise');
+                const eventType =
+                    course.type || (lessons.includes(course) ? "lesson" : "exercise");
 
                 while (startDate <= endDate) {
                     const eventStart = new Date(startDate);
-                    const eventEnd = new Date(startDate.getTime() + 2 * 60 * 60 * 1000); 
+                    const eventEnd = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
 
                     events.push({
                         id: `${course._id}-${startDate.toISOString()}`,
-                        title: `${course.name} - ${course.classroom || 'No Classroom Specified'}`,
+                        title: `${course.name} - ${course.classroom || "No Classroom Specified"}`,
                         start: eventStart,
                         end: eventEnd,
                         allDay: false,
                         extendedProps: {
                             details: { ...course, type: eventType },
-                            duration: `2 hours`
-                        }
+                            duration: `2 hours`,
+                        },
                     });
 
                     startDate.setDate(startDate.getDate() + 7);
@@ -69,7 +71,13 @@ export default function Calendar({ user }) {
 
     const handleEventClick = (selected) => {
         const { details, duration } = selected.event.extendedProps;
-        const clickedDate = formatDate(selected.event.start, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const clickedDate = formatDate(selected.event.start, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
 
         setSelectedEvent({ ...details, clickedDate });
         setSelectedDuration(duration);
@@ -83,30 +91,37 @@ export default function Calendar({ user }) {
     };
 
     const renderEventContent = (eventInfo) => {
-        const isLesson = eventInfo.event.extendedProps.details.type === 'lesson';
-        const bgColorClass = isLesson ? 'bg-blue-900' : 'bg-slate-800'; 
-        const textColorClass = 'text-white';
+        const isLesson = eventInfo.event.extendedProps.details.type === "lesson";
+        const bgColorClass = isLesson
+            ? "py-4 bg-gradient-to-r from-blue-400 to-cyan-400"
+            : "py-4 bg-gradient-to-r from-teal-400 to-green-400";
+
+        const textColorClass = "text-white";
 
         return (
             <div
-                className={`p-1 rounded ${bgColorClass} ${textColorClass} h-full truncate`}
+                className={`p-2 rounded-lg ${bgColorClass} ${textColorClass} h-full truncate shadow-md`}
                 title={`${eventInfo.event.title} - ${eventInfo.timeText}`}
             >
                 <strong>{eventInfo.event.title}</strong>
                 <br />
-                <span>{eventInfo.timeText}</span> 
+                <span>{eventInfo.timeText}</span>
             </div>
         );
     };
 
     return (
         <div className="flex justify-center w-full gap-8">
-            <div className="w-full mt-8">
+            <div className="w-full mt-8 p-6 bg-white shadow-xl rounded-3xl">
                 <FullCalendar
-                    height="85vh"
+                    height="75vh"
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                    headerToolbar={{ left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek" }}
-                    initialView="timeGridWeek" 
+                    headerToolbar={{
+                        left: "prev,next today",
+                        center: "title",
+                        right: "dayGridMonth,timeGridWeek,timeGridDay", // Removed "listWeek"
+                    }}
+                    initialView="timeGridWeek"
                     editable
                     selectable
                     selectMirror
@@ -114,27 +129,51 @@ export default function Calendar({ user }) {
                     events={currentEvents}
                     eventContent={renderEventContent}
                     eventClick={handleEventClick}
-                    slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }} 
-                    eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }} 
+                    slotLabelFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
+                    eventTimeFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
+                    buttonText={{
+                        today: "Today",
+                        month: "Month",
+                        week: "Week",
+                        day: "Day",
+                    }}
                 />
             </div>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent>
+                <DialogContent className="bg-white rounded-3xl p-8 shadow-lg">
                     <DialogHeader>
-                        <DialogTitle>Event Details</DialogTitle>
+                        <DialogTitle className="text-3xl font-bold text-gray-800">
+                            Event Details
+                        </DialogTitle>
                     </DialogHeader>
                     {selectedEvent && (
-                        <div className="space-y-4">
-                            <p><strong>Name:</strong> {selectedEvent.name}</p>
-                            <p><strong>Type:</strong> {selectedEvent.type}</p>
-                            <p><strong>Professor:</strong> {selectedEvent.professor}</p>
-                            <p><strong>Classroom:</strong> {selectedEvent.classroom || 'No Classroom Specified'}</p>
-                            <p><strong>Date:</strong> {selectedEvent.clickedDate}</p>
-                            <p><strong>Duration:</strong> {selectedDuration}</p>
+                        <div className="space-y-4 mt-4 text-left text-lg">
+                            <p>
+                                <strong>Name:</strong> {selectedEvent.name}
+                            </p>
+                            <p>
+                                <strong>Type:</strong> {selectedEvent.type}
+                            </p>
+                            <p>
+                                <strong>Professor:</strong> {selectedEvent.professor}
+                            </p>
+                            <p>
+                                <strong>Classroom:</strong>{" "}
+                                {selectedEvent.classroom || "No Classroom Specified"}
+                            </p>
+                            <p>
+                                <strong>Date:</strong> {selectedEvent.clickedDate}
+                            </p>
+                            <p>
+                                <strong>Duration:</strong> {selectedDuration}
+                            </p>
                         </div>
                     )}
-                    <button className="bg-blue-500 text-white p-3 mt-5 rounded-md" onClick={handleCloseDialog}>
+                    <button
+                        className="w-full mt-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
+                        onClick={handleCloseDialog}
+                    >
                         Close
                     </button>
                 </DialogContent>
