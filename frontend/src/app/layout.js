@@ -82,7 +82,10 @@ export default function RootLayout({ children }) {
               >
                 Log Out
               </Link>
-              <Link href="/profile" className="text-base font-light underline hover:scale-105">
+              <Link
+                href="/profile"
+                className="py-2 px-4 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-md font-semibold text-white transform transition-transform duration-150 hover:bg-blue-400 hover:shadow-md"
+              >
                 Welcome, {user && user.username}
               </Link>
             </div>
