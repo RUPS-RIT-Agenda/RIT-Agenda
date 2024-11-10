@@ -53,7 +53,7 @@ const SignupPage = () => {
 
       {/* Main Container with Form */}
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-10 flex flex-col items-center space-y-6 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-4 leading-tight">
           Sign Up
         </h1>
         {errorMessage && (
@@ -63,7 +63,7 @@ const SignupPage = () => {
         )}
         <form onSubmit={handleSubmit} className="w-full space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-start text-sm font-medium text-gray-700 mb-2">
               Username:
             </label>
             <input
@@ -76,7 +76,7 @@ const SignupPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-start text-sm font-medium text-gray-700 mb-2">
               Email:
             </label>
             <input
@@ -89,7 +89,7 @@ const SignupPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-start text-sm font-medium text-gray-700 mb-2">
               Password:
             </label>
             <input
@@ -101,63 +101,67 @@ const SignupPage = () => {
               className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Date of Birth:
-            </label>
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
-            />
+          <div className="flex space-x-4">
+            <div className="flex-1">
+              <label className="block text-start text-sm font-medium text-gray-700 mb-2">
+                Date of Birth:
+              </label>
+              <input
+                type="date"
+                name="dateOfBirth"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-start text-sm font-medium text-gray-700 mb-2">
+                Study Cycle:
+              </label>
+              <select
+                name="studyCycle"
+                value={formData.studyCycle}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all appearance-none hover:bg-gray-100 hover:border-blue-400 cursor-pointer"
+              >
+                <option value="">Select</option>
+                <option value="UNI">UNI</option>
+                <option value="MAG">MAG</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Study Cycle:
-            </label>
-            <select
-              name="studyCycle"
-              value={formData.studyCycle}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all appearance-none hover:bg-gray-100 hover:border-blue-400 cursor-pointer"
-            >
-              <option value="">Select</option>
-              <option value="UNI">UNI</option>
-              <option value="MAG">MAG</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              School Year:
-            </label>
-            <select
-              name="schoolYear"
-              value={formData.schoolYear}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all appearance-none hover:bg-gray-100 hover:border-blue-400 cursor-pointer"
-            >
-              <option value="">Select</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              User Group:
-            </label>
-            <input
-              type="number"
-              name="userGroup"
-              value={formData.userGroup}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
-            />
+          <div className="flex space-x-4 mt-4">
+            <div className="flex-1">
+              <label className="block text-start text-sm font-medium text-gray-700 mb-2">
+                School Year:
+              </label>
+              <select
+                name="schoolYear"
+                value={formData.schoolYear}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all appearance-none hover:bg-gray-100 hover:border-blue-400 cursor-pointer"
+              >
+                <option value="">Select</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="block text-start text-sm font-medium text-gray-700 mb-2">
+                User Group:
+              </label>
+              <input
+                type="number"
+                name="userGroup"
+                value={formData.userGroup}
+                onChange={handleChange}
+                required
+                className="w-full mb-6 px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              />
+            </div>
           </div>
           <button
             type="submit"

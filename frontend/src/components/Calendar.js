@@ -7,7 +7,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import "./calendar.css"; // Import your custom styles here
+import "./calendar.css";
 
 export default function Calendar({ user }) {
     const [currentEvents, setCurrentEvents] = useState([]);
@@ -93,8 +93,8 @@ export default function Calendar({ user }) {
     const renderEventContent = (eventInfo) => {
         const isLesson = eventInfo.event.extendedProps.details.type === "lesson";
         const bgColorClass = isLesson
-            ? "py-4 bg-gradient-to-r from-blue-400 to-cyan-400"
-            : "py-4 bg-gradient-to-r from-teal-400 to-green-400";
+            ? "py-4 bg-gradient-to-r from-blue-600 to-blue-500"
+            : "py-4 bg-gradient-to-r from-teal-600 to-teal-500";
 
         const textColorClass = "text-white";
 
@@ -119,7 +119,7 @@ export default function Calendar({ user }) {
                     headerToolbar={{
                         left: "prev,next today",
                         center: "title",
-                        right: "dayGridMonth,timeGridWeek,timeGridDay", // Removed "listWeek"
+                        right: "dayGridMonth,timeGridWeek,timeGridDay", 
                     }}
                     initialView="timeGridWeek"
                     editable

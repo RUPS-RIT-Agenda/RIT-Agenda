@@ -61,7 +61,7 @@ export default function Login() {
 
       {/* Main Container with Form */}
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-16 flex flex-col items-center space-y-6 text-center">
-        <h1 className="text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-6 leading-tight">
           Log In
         </h1>
         {errorMessage && (
@@ -71,7 +71,7 @@ export default function Login() {
         )}
         <form onSubmit={handleSubmit} className="w-full space-y-6">
           <div>
-            <label className="block text-lg font-medium text-gray-700 mb-2">
+            <label className="block text-start text-lg font-medium text-gray-700 mb-2">
               Username:
             </label>
             <input
@@ -84,7 +84,7 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700 mb-2">
+            <label className="block text-start text-lg font-medium text-gray-700 mb-2">
               Password:
             </label>
             <input
@@ -93,7 +93,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
+              className="w-full px-4 mb-6 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 focus:outline-none shadow-md transition-all"
             />
           </div>
           <button
