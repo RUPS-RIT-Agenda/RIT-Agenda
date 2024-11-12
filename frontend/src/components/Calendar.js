@@ -23,6 +23,7 @@ export default function Calendar({ user }) {
 
     const fetchEvents = async (user) => {
         try {
+            // Fetch course lessons and exercises
             const lessonsResponse = await fetch(
                 `http://localhost:3001/api/course/lessons/${user.studyCycle}/${user.schoolYear}`
             );
@@ -32,6 +33,21 @@ export default function Calendar({ user }) {
                 `http://localhost:3001/api/course/exercises/${user.studyCycle}/${user.schoolYear}/${user.userGroup}`
             );
             const exercises = exercisesResponse.ok ? await exercisesResponse.json() : [];
+
+            // Fetch custom events
+            const customEventsResponse = await fetch(
+                `http://localhost:3001/api/custom-event/${user._id}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                }
+            );
+            const customEvents = customEventsResponse.ok ? await customEventsResponse.json() : [];
+            console.log("Custom events", customEvents);
+
 
             const transformedEvents = [...lessons, ...exercises].flatMap((course) => {
                 const events = [];
@@ -63,11 +79,26 @@ export default function Calendar({ user }) {
                 return events;
             });
 
-            setCurrentEvents(transformedEvents);
+            const transformedCustomEvents = customEvents.map((customEvent) => ({
+                id: `custom-${customEvent._id}`,
+                title: customEvent.name,
+                start: new Date(customEvent.starttime),
+                end: new Date(customEvent.endtime),
+                location: customEvent.location,
+                allDay: false,
+                extendedProps: {
+                    description: customEvent.description,
+                    type: "custom",
+                },
+            }));
+
+            setCurrentEvents([...transformedEvents, ...transformedCustomEvents]);
         } catch (error) {
             console.error("Error fetching events:", error);
         }
     };
+
+
 
     const handleEventClick = (selected) => {
         const { details, duration } = selected.event.extendedProps;
@@ -78,6 +109,8 @@ export default function Calendar({ user }) {
             hour: "2-digit",
             minute: "2-digit",
         });
+
+        console.log("Selected event details:", details);
 
         setSelectedEvent({ ...details, clickedDate });
         setSelectedDuration(duration);
@@ -91,10 +124,22 @@ export default function Calendar({ user }) {
     };
 
     const renderEventContent = (eventInfo) => {
-        const isLesson = eventInfo.event.extendedProps.details.type === "lesson";
+        const details = eventInfo.event.extendedProps.details || {};
+        const eventType = (details.type || eventInfo.event.extendedProps.type || "").trim();
+
+
+        const isLesson = eventType === "lesson";
+        const isExercise = eventType === "exercise" || eventType === "exercises";
+        const isCustomEvent = eventType === "custom";
+
+
         const bgColorClass = isLesson
-            ? "py-4 bg-gradient-to-r from-blue-600 to-blue-500"
-            : "py-4 bg-gradient-to-r from-teal-600 to-teal-500";
+            ? "bg-blue-600"
+            : isExercise
+                ? "bg-teal-500"
+                : isCustomEvent
+                    ? "bg-blue-300"
+                    : "bg-gray-500";
 
         const textColorClass = "text-white";
 
@@ -109,6 +154,9 @@ export default function Calendar({ user }) {
             </div>
         );
     };
+
+
+
 
     return (
         <div className="flex justify-center w-full gap-8">
@@ -147,29 +195,53 @@ export default function Calendar({ user }) {
                             Event Details
                         </DialogTitle>
                     </DialogHeader>
+
                     {selectedEvent && (
                         <div className="space-y-4 mt-4 text-left text-lg">
-                            <p>
-                                <strong>Name:</strong> {selectedEvent.name}
-                            </p>
-                            <p>
-                                <strong>Type:</strong> {selectedEvent.type}
-                            </p>
-                            <p>
-                                <strong>Professor:</strong> {selectedEvent.professor}
-                            </p>
-                            <p>
-                                <strong>Classroom:</strong>{" "}
-                                {selectedEvent.classroom || "No Classroom Specified"}
-                            </p>
-                            <p>
-                                <strong>Date:</strong> {selectedEvent.clickedDate}
-                            </p>
-                            <p>
-                                <strong>Duration:</strong> {selectedDuration}
-                            </p>
+                            {selectedEvent.type === "lesson" || selectedEvent.type === "exercises" ? (
+                                <>
+                                    <p>
+                                        <strong>Name:</strong> {selectedEvent.name}
+                                    </p>
+                                    <p>
+                                        <strong>Type:</strong> {selectedEvent.type}
+                                    </p>
+                                    <p>
+                                        <strong>Professor:</strong> {selectedEvent.professor}
+                                    </p>
+                                    <p>
+                                        <strong>Classroom:</strong> {selectedEvent.classroom || "No Classroom Specified"}
+                                    </p>
+                                    <p>
+                                        <strong>Date:</strong> {selectedEvent.clickedDate}
+                                    </p>
+                                    <p>
+                                        <strong>Duration:</strong> {selectedDuration}
+                                    </p>
+                                </>
+                            ) : selectedEvent.type === "custom" ? (
+                                <>
+                                    <p>
+                                        <strong>Name:</strong> {selectedEvent.name}
+                                    </p>
+                                    <p>
+                                        <strong>Description:</strong> {selectedEvent.description || "No description available"}
+                                    </p>
+                                    <p>
+                                        <strong>Start Time:</strong> {new Date(selectedEvent.starttime).toLocaleString()}
+                                    </p>
+                                    <p>
+                                        <strong>End Time:</strong> {new Date(selectedEvent.endtime).toLocaleString()}
+                                    </p>
+                                    <p>
+                                        <strong>Location:</strong> {selectedEvent.location || "No location specified"}
+                                    </p>
+                                </>
+                            ) : null}
                         </div>
                     )}
+
+
                     <button
                         className="w-full mt-6 py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transform transition-transform duration-300 hover:-translate-y-1 hover:scale-105"
                         onClick={handleCloseDialog}
@@ -178,6 +250,8 @@ export default function Calendar({ user }) {
                     </button>
                 </DialogContent>
             </Dialog>
+
+
         </div>
     );
 }

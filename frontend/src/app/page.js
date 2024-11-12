@@ -19,6 +19,7 @@ const LandingPage = () => {
             if (response.ok) {
                 const data = await response.json();
                 setUser(data.user);
+                console.log(data.user);
             } else {
                 setUser(null);
             }

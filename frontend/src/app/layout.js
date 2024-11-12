@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -63,33 +64,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 relative`}
       >
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="floating-circle top-5 left-20 w-20 h-20 bg-blue-300 opacity-40 rounded-full blur-xl"></div>
-        </div>
+
 
         {isLoggedIn && (
-          <nav className="fixed top-0 left-0 w-full z-10 bg-gradient-to-br from-blue-600 to-cyan-600 text-white px-8 py-4 flex justify-between items-center shadow-md">
-            <Link
-              href="/"
-              className="text-base font-medium transform transition-transform hover:scale-105"
-            >
-              {/* Home */}
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/logout"
-                className="py-2 px-4 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-md font-semibold text-white transform transition-transform duration-150 hover:bg-blue-400 hover:shadow-md"
-              >
-                Log Out
-              </Link>
-              <Link
-                href="/profile"
-                className="py-2 px-4 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-md font-semibold text-white transform transition-transform duration-150 hover:bg-blue-400 hover:shadow-md"
-              >
-                Welcome, {user && user.username}
-              </Link>
-            </div>
-          </nav>
+          <Navbar />
         )}
 
         <main className={`${isLoggedIn ? "pt-20" : ""} p-4`}>{children}</main>
